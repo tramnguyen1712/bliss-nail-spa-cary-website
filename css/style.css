@@ -215,7 +215,13 @@ a{ color:inherit; text-decoration:none; }
 }
 
 .menu-block{
-  width: min(760px, 100%);
+  /* use percentage + max-width instead of min(): some older iOS
+     Safari versions mishandled the min() function and could compute
+     a width larger than the container, effectively hiding the content
+     off‑screen.  The `width:100%` + `max-width` combo is equivalent
+     and more widely supported. */
+  width:100%;
+  max-width:760px;
   margin: 0 auto;
   background:#fff;
   border:1px solid var(--border);

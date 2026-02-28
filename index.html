@@ -100,7 +100,7 @@
 </section>
 
   <!-- Services -->
-  <section id="services" class="section reveal">
+  <section id="services" class="section">
     <div class="container">
       <div class="section-head">
         <h1 class="section-title">Services & Pricing🧾</h1>
@@ -235,7 +235,7 @@
         </div>
 
         <!-- Add-Ons -->
-        <div id="addons" class="menu-block reveal">
+        <div id="addons" class="menu-block">
           <h2>Add-On Service</h2>
           <ul class="list">
             <li>Artificial Removal w/ Service $10 • w/o Service $15</li>
@@ -408,18 +408,41 @@
   <!-- Intersection Observer fallback for scroll animations -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      if (!('IntersectionObserver' in window)) return; // old browsers
+      if (!('IntersectionObserver' in window)) return; // very old browsers
+
+      function reveal(el) {
+        el.classList.add('visible');
+      }
+
       const io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+          if (entry.isIntersecting || entry.intersectionRatio > 0) {
+            reveal(entry.target);
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.15 });
+      }, { threshold: 0 });
 
       document.querySelectorAll('.reveal, .slide-left, .slide-right')
-              .forEach(el => io.observe(el));
+              .forEach(el => {
+                io.observe(el);
+                // immediate check for hash or fast scroll
+                if (el.getBoundingClientRect().top < window.innerHeight &&
+                    el.getBoundingClientRect().bottom > 0) {
+                  reveal(el);
+                  io.unobserve(el);
+                }
+              });
+
+      // also reveal any element targeted by a hash (nav clicks)
+      function revealHash() {
+        if (location.hash) {
+          const target = document.querySelector(location.hash);
+          if (target) reveal(target);
+        }
+      }
+      window.addEventListener('hashchange', revealHash);
+      revealHash();
     });
   </script>
 </body>
