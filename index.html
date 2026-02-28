@@ -404,6 +404,24 @@
       <a class="back-to-home" href="#home">Back to Home ↑</a>
     </div>
   </footer>
+
+  <!-- Intersection Observer fallback for scroll animations -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!('IntersectionObserver' in window)) return; // old browsers
+      const io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.reveal, .slide-left, .slide-right')
+              .forEach(el => io.observe(el));
+    });
+  </script>
 </body>
 </html>
 

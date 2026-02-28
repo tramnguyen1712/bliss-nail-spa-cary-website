@@ -437,6 +437,28 @@ a{ color:inherit; text-decoration:none; }
   will-change: opacity, transform;
 }
 
+.slide-left{
+  opacity:0;
+  transform: translateX(-160px);
+  will-change: transform, opacity;
+}
+
+.slide-right{
+  opacity:0;
+  transform: translateX(160px);
+  will-change: transform, opacity;
+}
+
+/* Transition‑based fallback for any browser.  A small script adds
+   the `.visible` class when elements intersect the viewport. */
+.reveal.visible,
+.slide-left.visible,
+.slide-right.visible {
+  opacity:1;
+  transform: translateX(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
 @supports (animation-timeline: view()) {
   .reveal{
     animation: reveal-left 2.0s cubic-bezier(.2,.8,.2,1) forwards;
@@ -448,19 +470,15 @@ a{ color:inherit; text-decoration:none; }
   }
 
   .slide-left{
-    opacity:0;
     animation: in-left 1.6s cubic-bezier(.2,.8,.2,1) forwards;
     animation-timeline: view();
     animation-range: entry 10% cover 35%;
-    will-change: transform, opacity;
   }
 
   .slide-right{
-    opacity:0;
     animation: in-right 1.6s cubic-bezier(.2,.8,.2,1) forwards;
     animation-timeline: view();
     animation-range: entry 10% cover 35%;
-    will-change: transform, opacity;
   }
 
   @keyframes in-left{
@@ -474,10 +492,18 @@ a{ color:inherit; text-decoration:none; }
   }
 }
 
-@supports not (animation-timeline: view()) {
-  .reveal{ opacity:1; transform:none; }
-  .slide-left, .slide-right{ opacity:1; transform:none; }
-}
+/* Fallback for browsers that don’t support the new scroll‑linked
+   `animation-timeline` API.  Instead of forcing the elements to be
+   visible immediately we leave them in their hidden state and rely on a
+   small bit of JavaScript below to toggle a `.visible` class when the
+   element scrolls into view. */
+
+/* NOTE: the intersection‑observer script is injected at the end of
+   `index.html`.  It only adds the class once, then unobserves so the
+   animation plays a single time. */
+
+/* The old unsupported block was removed; leaving elements visible
+   instantly made the mobile site appear static. */
 
 /* =========================
    Mobile
